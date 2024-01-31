@@ -64,7 +64,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 export type GetUsersByFid = Promise<{
   users: [{ fid: number; custody_address: string }] | undefined;
 }>;
-function getUsersByFid(fids: string): GetUsersByFid {
+export function getUsersByFid(fids: string): GetUsersByFid {
   const options = {
     method: 'GET',
     headers: { accept: 'application/json', api_key: 'NEYNAR_API_DOCS' },
@@ -72,7 +72,6 @@ function getUsersByFid(fids: string): GetUsersByFid {
 
   return fetch(`https://api.neynar.com/v2/farcaster/user/bulk?fids=${fids}`, options)
     .then((response) => response.json())
-    .then((response) => console.log(response))
     .catch((err) => console.error(err)) as any as GetUsersByFid;
 }
 
