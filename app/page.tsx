@@ -26,7 +26,11 @@ export default function Page() {
   return (
     <>
       <h1>{process.env.NEXT_PUBLIC_URL}</h1>
-      <img src="/buy-coffee.WEBP" alt="A Farcaster frame to buy a user coffee" />
+      <img
+        style={{ maxWidth: '100%' }}
+        src="/buy-coffee.WEBP"
+        alt="A Farcaster frame to buy a user coffee"
+      />
     </>
   );
 }

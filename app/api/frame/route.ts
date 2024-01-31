@@ -24,7 +24,7 @@ export const tipButtons = [
   },
 ];
 
-async function getResponse(req: NextRequest): Promise<NextResponse> {
+async function getResponse(req: NextRequest): Promise<NextResponse | Response> {
   const searchParams = req.nextUrl.searchParams;
   const queryString = searchParams.toString();
   console.log('@@query', queryString);
@@ -57,18 +57,15 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     body,
   );
 
-  // if (searchParams.get('to')) {
   const amount = message?.buttonIndex && tipButtons[message?.buttonIndex - 1].amount;
-  const url = `${process.env.NEXT_PUBLIC_URL}/tip?amount=${amount}&to=${castCustodyAddress}&fid=${message?.castId.fid}`;
+  const url = `${process.env.NEXT_PUBLIC_URL}/tip?amount=${amount}&fid=${message?.castId.fid}`;
 
-  // @ts-ignore
   return new Response('OK', {
     status: 302,
     headers: {
       location: url,
     },
   });
-  // }
 
   // return new NextResponse(`<!DOCTYPE html><html><head>
   //   <meta property="fc:frame" content="vNext" />
@@ -84,12 +81,12 @@ export async function POST(req: NextRequest): Promise<Response> {
   return getResponse(req);
 }
 
-export type GetUsersByFid = Promise<{
+export type GetUsersByFid = {
   users:
-    | [{ fid: number; custody_address: string; display_name: string; pfp_url: string }]
+    | [{ fid: number; custody_address: `0x${string}`; display_name: string; pfp_url: string }]
     | undefined;
-}>;
-export function getUsersByFid(fids: string): GetUsersByFid {
+};
+export function getUsersByFid(fids: string): Promise<GetUsersByFid> {
   const options = {
     method: 'GET',
     headers: { accept: 'application/json', api_key: 'NEYNAR_API_DOCS' },
@@ -97,7 +94,7 @@ export function getUsersByFid(fids: string): GetUsersByFid {
 
   return fetch(`https://api.neynar.com/v2/farcaster/user/bulk?fids=${fids}`, options)
     .then((response) => response.json())
-    .catch((err) => console.error(err)) as any as GetUsersByFid;
+    .catch((err) => console.error(err));
 }
 
 export const dynamic = 'force-dynamic';

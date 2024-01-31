@@ -4,11 +4,13 @@ import { type BaseError, useSendTransaction, useWaitForTransactionReceipt } from
 import { parseEther } from 'viem';
 import { baseSepolia } from 'viem/chains';
 import { TipPageType } from './page';
+import { GetUsersByFid } from '../api/frame/route';
 
-type TipPageExtendedType = { user: any };
+type TipPageExtendedType = { user: NonNullable<GetUsersByFid['users']>[0] };
 export default function SendTip({ searchParams, user }: TipPageType & TipPageExtendedType) {
   const { data: hash, error, isPending, sendTransaction } = useSendTransaction();
   console.log('@@searchParams', searchParams, user);
+  const toAddress = user.custody_address;
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -16,7 +18,7 @@ export default function SendTip({ searchParams, user }: TipPageType & TipPageExt
     const to = formData.get('address') as `0x${string}`;
     const value = formData.get('value') as string;
     sendTransaction({
-      to: searchParams.to,
+      to: toAddress,
       value: parseEther(searchParams.amount),
       chainId: baseSepolia.id,
     });
