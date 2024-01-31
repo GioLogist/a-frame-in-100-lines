@@ -1,5 +1,6 @@
 import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
+import { redirect } from 'next/navigation';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   const searchParams = req.nextUrl.searchParams;
@@ -35,7 +36,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   );
 
   if (searchParams.get('amount')) {
-    // handle tip redirect
+    const url = `${process.env.NEXT_PUBLIC_URL}/tip?amount=${searchParams.get('amount')}&to=${searchParams.get('to')}`;
+    return redirect(url);
   }
 
   return new NextResponse(`<!DOCTYPE html><html><head>
