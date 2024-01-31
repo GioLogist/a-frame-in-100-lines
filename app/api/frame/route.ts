@@ -1,21 +1,29 @@
-import { FrameRequest, getFrameAccountAddress, getFrameMessage } from '@coinbase/onchainkit';
+import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
-  let accountAddress: string | undefined = '';
+  // const searchParams = req.nextUrl.searchParams;
+  // const query = searchParams.get('hello');
+  // console.log('@@query', query);
+
   const body: FrameRequest = await req.json();
   const { isValid, message } = await getFrameMessage(body);
+
+  let castCustodyAddress: string | undefined;
+
   if (isValid) {
     try {
-      accountAddress = await getFrameAccountAddress(message, { NEYNAR_API_KEY: 'NEYNAR_API_DOCS' });
+      const usersResponse = await getUsersByFid(String(message.castId.fid));
+      castCustodyAddress = usersResponse?.users?.[0].custody_address; // user who interacted
     } catch (err) {
       console.log('@@testing', err);
       console.error(err);
     }
   }
+
   console.log(
-    '@@accountAddress',
-    accountAddress,
+    '@@castCustodyAddress',
+    castCustodyAddress,
     'isValid',
     isValid,
     'message',
@@ -27,13 +35,30 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   return new NextResponse(`<!DOCTYPE html><html><head>
     <meta property="fc:frame" content="vNext" />
     <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/park-2.png" />
-    <meta property="fc:frame:button:1" content="${accountAddress}" />
+    <meta property="fc:frame:button:1" content="${castCustodyAddress}" />
+    <meta property="fc:frame:button:2" content="🫡 Tip 0.000001" />
+    <meta property="fc:frame:button:2:action" content="post_redirect" />
+    <meta property="fc:frame:button:2:post_url" content="${process.env.NEXT_PUBLIC_URL}/tip?amount=0.000001&to=${castCustodyAddress}" />
     <meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_URL}/api/frame" />
   </head></html>`);
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
   return getResponse(req);
+}
+
+function getUsersByFid(
+  fids: string,
+): Promise<{ users: [{ fid: number; custody_address: string }] | undefined }> {
+  const options = {
+    method: 'GET',
+    headers: { accept: 'application/json', api_key: 'NEYNAR_API_DOCS' },
+  };
+
+  return fetch(`https://api.neynar.com/v2/farcaster/user/bulk?fids=${fids}`, options)
+    .then((response) => response.json())
+    .then((response) => console.log(response))
+    .catch((err) => console.error(err));
 }
 
 export const dynamic = 'force-dynamic';
