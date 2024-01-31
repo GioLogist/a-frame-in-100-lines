@@ -9,15 +9,17 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     try {
       accountAddress = await getFrameAccountAddress(message, { NEYNAR_API_KEY: 'NEYNAR_API_DOCS' });
     } catch (err) {
+      console.log('@@testing', err);
       console.error(err);
     }
   }
+  console.log('@@accountAddress', accountAddress);
 
   return new NextResponse(`<!DOCTYPE html><html><head>
     <meta property="fc:frame" content="vNext" />
-    <meta property="fc:frame:image" content="https://zizzamia.xyz/park-2.png" />
+    <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/park-2.png" />
     <meta property="fc:frame:button:1" content="${accountAddress}" />
-    <meta property="fc:frame:post_url" content="https://zizzamia.xyz/api/frame" />
+    <meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_URL}/api/frame" />
   </head></html>`);
 }
 
