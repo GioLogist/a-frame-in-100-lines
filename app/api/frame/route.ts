@@ -37,7 +37,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   if (searchParams.get('amount')) {
     const url = `${process.env.NEXT_PUBLIC_URL}/tip?amount=${searchParams.get('amount')}&to=${searchParams.get('to')}`;
-    return redirect(url);
+    // @ts-ignore
+    return new Response('OK', {
+      status: 301,
+      headers: {
+        locoation: url,
+      },
+    });
   }
 
   return new NextResponse(`<!DOCTYPE html><html><head>
@@ -55,7 +61,9 @@ export async function POST(req: NextRequest): Promise<Response> {
   return getResponse(req);
 }
 
-type GetUsersByFid = Promise<{ users: [{ fid: number; custody_address: string }] | undefined }>;
+export type GetUsersByFid = Promise<{
+  users: [{ fid: number; custody_address: string }] | undefined;
+}>;
 function getUsersByFid(fids: string): GetUsersByFid {
   const options = {
     method: 'GET',
