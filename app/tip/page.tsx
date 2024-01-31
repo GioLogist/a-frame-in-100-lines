@@ -7,7 +7,7 @@ import { baseSepolia } from 'viem/chains';
 export default function SendTip({
   searchParams,
 }: {
-  searchParams: { address?: string; amount: string };
+  searchParams: { address?: string; amount: string; to: `0x${string}` };
 }) {
   const { data: hash, error, isPending, sendTransaction } = useSendTransaction();
   console.log('@@searchParams', searchParams);
@@ -17,7 +17,11 @@ export default function SendTip({
     const formData = new FormData(e.target as HTMLFormElement);
     const to = formData.get('address') as `0x${string}`;
     const value = formData.get('value') as string;
-    sendTransaction({ to, value: parseEther(searchParams.amount), chainId: baseSepolia.id });
+    sendTransaction({
+      to: searchParams.to,
+      value: parseEther(searchParams.amount),
+      chainId: baseSepolia.id,
+    });
   }
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
@@ -25,16 +29,18 @@ export default function SendTip({
   });
 
   return (
-    <form onSubmit={submit}>
-      <input name="address" placeholder="0xA0Cf…251e" required />
-      <input name="value" placeholder="0.05" required value={searchParams.amount} />
-      <button disabled={isPending} type="submit">
-        {isPending ? 'Confirming...' : 'Send'}
-      </button>
-      {hash && <div>Transaction Hash: {hash}</div>}
-      {isConfirming && <div>Waiting for confirmation...</div>}
-      {isConfirmed && <div>Transaction confirmed.</div>}
-      {error && <div>Error: {(error as BaseError).shortMessage || error.message}</div>}
-    </form>
+    <div className="modal">
+      <form onSubmit={submit}>
+        <input name="address" placeholder="0xA0Cf…251e" required />
+        <input name="value" placeholder="0.05" required value={searchParams.amount} />
+        <button disabled={isPending} type="submit">
+          {isPending ? 'Confirming...' : 'Send'}
+        </button>
+        {hash && <div>Transaction Hash: {hash}</div>}
+        {isConfirming && <div>Waiting for confirmation...</div>}
+        {isConfirmed && <div>Transaction confirmed.</div>}
+        {error && <div>Error: {(error as BaseError).shortMessage || error.message}</div>}
+      </form>
+    </div>
   );
 }

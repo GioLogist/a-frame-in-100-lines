@@ -1,0 +1,23 @@
+.page-bg {
+  background-image: linear-gradient(to right, var(--tw-gradient-stops));
+  --tw-gradient-from: #ea495f var(--tw-gradient-from-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  --tw-gradient-to: #e43d84 var(--tw-gradient-to-position);
+  --tw-gradient-from-position: ;
+  --tw-gradient-via-position: ;
+  --tw-gradient-to-position: ;
+}
+
+.modal {
+  background-color: rgb(255 255 255);
+  box-shadow:
+    0 0 #0000,
+    0 0 #0000,
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 25px;
+  border: 1px solid #b13067;
+  max-width: 500px;
+  margin: 0 auto;
+}

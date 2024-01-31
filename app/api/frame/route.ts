@@ -2,9 +2,9 @@ import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
-  // const searchParams = req.nextUrl.searchParams;
-  // const query = searchParams.get('hello');
-  // console.log('@@query', query);
+  const searchParams = req.nextUrl.searchParams;
+  const queryString = searchParams.toString();
+  console.log('@@query', queryString);
 
   const body: FrameRequest = await req.json();
   const { isValid, message } = await getFrameMessage(body);
@@ -14,7 +14,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (isValid) {
     try {
       const usersResponse = await getUsersByFid(String(message.castId.fid));
+      console.log('@@usersResponse', usersResponse);
       castCustodyAddress = usersResponse?.users?.[0].custody_address; // user who interacted
+      console.log('@@castCustodyAddress', castCustodyAddress);
     } catch (err) {
       console.log('@@testing', err);
       console.error(err);
@@ -31,6 +33,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     'body',
     body,
   );
+
+  if (searchParams.get('amount')) {
+    // handle tip redirect
+  }
 
   return new NextResponse(`<!DOCTYPE html><html><head>
     <meta property="fc:frame" content="vNext" />
