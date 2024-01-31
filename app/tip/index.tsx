@@ -12,7 +12,7 @@ import { parseEther } from 'viem';
 import { baseSepolia } from 'viem/chains';
 import { TipPageType } from './page';
 import { GetUsersByFid } from '../api/frame/route';
-import { injected } from 'wagmi/connectors';
+import { useCallback } from 'react';
 
 type TipPageExtendedType = { user: NonNullable<GetUsersByFid['users']>[0] };
 export default function SendTip({ searchParams, user }: TipPageType & TipPageExtendedType) {
@@ -22,17 +22,13 @@ export default function SendTip({ searchParams, user }: TipPageType & TipPageExt
   const { connect } = useConnect();
   const connectors = useConnectors();
 
-  async function submit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const to = formData.get('address') as `0x${string}`;
-    const value = formData.get('value') as string;
+  const sendTip = useCallback(() => {
     sendTransaction({
       to: toAddress,
       value: parseEther(searchParams.amount),
       chainId: baseSepolia.id,
     });
-  }
+  }, []);
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
     hash,
@@ -51,40 +47,38 @@ export default function SendTip({ searchParams, user }: TipPageType & TipPageExt
         </div>
       </div>
       <div className="modal-body">
-        <form onSubmit={submit}>
-          {/* <input name="address" placeholder="0xA0Cf…251e" required />
+        {/* <input name="address" placeholder="0xA0Cf…251e" required />
           <input name="value" placeholder="0.05" required value={searchParams.amount} /> */}
-          {address && !hash && (
-            <button disabled={isPending} type="submit" className="btn-lg page-bg mb-2">
-              {isPending ? 'Confirming...' : 'Send'}
-            </button>
-          )}
-          {!address && (
-            <button
-              onClick={() => connect({ connector: connectors[0] })}
-              className="btn-lg page-bg mb-2"
-            >
-              Connect
-            </button>
-          )}
-          {hash && (
-            <div className="mt-3">
-              <div style={{ fontSize: 32 }}>🤙🏻 Success!</div>
+        {address && !hash && (
+          <button disabled={isPending} onClick={sendTip} className="btn-lg page-bg mb-2">
+            {isPending ? 'Confirming...' : 'Send'}
+          </button>
+        )}
+        {!address && (
+          <button
+            onClick={() => connect({ connector: connectors[0] })}
+            className="btn-lg page-bg mb-2"
+          >
+            Connect
+          </button>
+        )}
+        {hash && (
+          <div className="mt-3">
+            <div style={{ fontSize: 32 }}>🤙🏻 Success!</div>
 
-              <div className="mt-3">
-                View your transaction on{' '}
-                <a href={`https://base-sepolia.blockscout.com/tx/${hash}`} target="_blank">
-                  BlockScout
-                </a>
-              </div>
+            <div className="mt-3">
+              View your transaction on{' '}
+              <a href={`https://base-sepolia.blockscout.com/tx/${hash}`} target="_blank">
+                BlockScout
+              </a>
             </div>
-          )}
-          {isConfirming && <div className="mt-3">Waiting for confirmation...</div>}
-          {isConfirmed && <div className="mt-3">Transaction confirmed.</div>}
-          {error && (
-            <div className="mt-3">Error: {(error as BaseError).shortMessage || error.message}</div>
-          )}
-        </form>
+          </div>
+        )}
+        {isConfirming && <div className="mt-3">Waiting for confirmation...</div>}
+        {isConfirmed && <div className="mt-3">Transaction confirmed.</div>}
+        {error && (
+          <div className="mt-3">Error: {(error as BaseError).shortMessage || error.message}</div>
+        )}
         {/* {JSON.stringify(user, null, 2)} */}
       </div>
     </div>
