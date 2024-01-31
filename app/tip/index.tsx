@@ -1,15 +1,26 @@
 'use client';
 import * as React from 'react';
-import { type BaseError, useSendTransaction, useWaitForTransactionReceipt } from 'wagmi';
+import {
+  type BaseError,
+  useSendTransaction,
+  useWaitForTransactionReceipt,
+  useConnect,
+  useAccount,
+  useConnectors,
+} from 'wagmi';
 import { parseEther } from 'viem';
 import { baseSepolia } from 'viem/chains';
 import { TipPageType } from './page';
 import { GetUsersByFid } from '../api/frame/route';
+import { injected } from 'wagmi/connectors';
 
 type TipPageExtendedType = { user: NonNullable<GetUsersByFid['users']>[0] };
 export default function SendTip({ searchParams, user }: TipPageType & TipPageExtendedType) {
   const { data: hash, error, isPending, sendTransaction } = useSendTransaction();
   const toAddress = user.custody_address;
+  const { address } = useAccount();
+  const { connect } = useConnect();
+  const connectors = useConnectors();
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -43,9 +54,17 @@ export default function SendTip({ searchParams, user }: TipPageType & TipPageExt
         <form onSubmit={submit}>
           {/* <input name="address" placeholder="0xA0Cf…251e" required />
           <input name="value" placeholder="0.05" required value={searchParams.amount} /> */}
-          {!hash && (
+          {address && !hash && (
             <button disabled={isPending} type="submit" className="btn-lg page-bg mb-2">
               {isPending ? 'Confirming...' : 'Send'}
+            </button>
+          )}
+          {!address && (
+            <button
+              onClick={() => connect({ connector: connectors[0] })}
+              className="btn-lg page-bg mb-2"
+            >
+              Connect
             </button>
           )}
           {hash && (
