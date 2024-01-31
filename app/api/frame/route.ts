@@ -13,7 +13,16 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       console.error(err);
     }
   }
-  console.log('@@accountAddress', accountAddress);
+  console.log(
+    '@@accountAddress',
+    accountAddress,
+    'isValid',
+    isValid,
+    'message',
+    message,
+    'body',
+    body,
+  );
 
   return new NextResponse(`<!DOCTYPE html><html><head>
     <meta property="fc:frame" content="vNext" />
