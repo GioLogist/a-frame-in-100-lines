@@ -34,7 +34,7 @@ export default function SendTip({ searchParams, user }: TipPageType & TipPageExt
         Sending
         <div style={{ fontSize: 32 }}>🫡 {searchParams.amount} ETH</div>
         to: <span style={{ color: 'black', fontWeight: 'bold' }}>{user.display_name}</span>
-        <div className="muted">({searchParams.to})</div>
+        <div className="muted">({toAddress})</div>
         <div style={{ height: 150, width: 150, overflow: 'hidden', margin: '25px auto 0 auto' }}>
           <img src={user.pfp_url} className="avatar" />
         </div>
