@@ -1,13 +1,11 @@
 import { getFrameMetadata } from '@coinbase/onchainkit';
 import type { Metadata } from 'next';
+import { tipButtons } from './api/frame/route';
 
 const frameMetadata = getFrameMetadata({
-  buttons: [
-    {
-      label: 'We love BOAT',
-    },
-  ],
-  image: `${process.env.NEXT_PUBLIC_URL}/park-1.png`,
+  // @ts-ignore
+  buttons: tipButtons,
+  image: `${process.env.NEXT_PUBLIC_URL}/buy-coffee.WEBP`,
   post_url: `${process.env.NEXT_PUBLIC_URL}/api/frame`,
 });
 
@@ -28,6 +26,7 @@ export default function Page() {
   return (
     <>
       <h1>{process.env.NEXT_PUBLIC_URL}</h1>
+      <img src="/buy-coffee.WEBP" alt="A Farcaster frame to buy a user coffee" />
     </>
   );
 }

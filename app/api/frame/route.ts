@@ -1,11 +1,26 @@
 import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 
-const tipButtons = [
-  {},
+export const tipButtons = [
   {
     amount: '0.000001',
-    text: '🫡 Tip 0.000001',
+    label: '🫡 0.000001',
+    action: 'post_redirect',
+  },
+  {
+    amount: '0.000002',
+    label: '🙏🏻 0.000002',
+    action: 'post_redirect',
+  },
+  {
+    amount: '0.000003',
+    label: '🥹 0.000003',
+    action: 'post_redirect',
+  },
+  {
+    amount: '0.000004',
+    label: '🎉 0.000004',
+    action: 'post_redirect',
   },
 ];
 
@@ -42,26 +57,27 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     body,
   );
 
-  if (searchParams.get('to')) {
-    const amount = message?.buttonIndex && tipButtons[message?.buttonIndex - 1].amount;
-    const url = `${process.env.NEXT_PUBLIC_URL}/tip?amount=${amount}&to=${searchParams.get('to')}`;
-    // @ts-ignore
-    return new Response('OK', {
-      status: 302,
-      headers: {
-        location: url,
-      },
-    });
-  }
+  // if (searchParams.get('to')) {
+  const amount = message?.buttonIndex && tipButtons[message?.buttonIndex - 1].amount;
+  const url = `${process.env.NEXT_PUBLIC_URL}/tip?amount=${amount}&to=${castCustodyAddress}&fid=${message?.castId.fid}`;
 
-  return new NextResponse(`<!DOCTYPE html><html><head>
-    <meta property="fc:frame" content="vNext" />
-    <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/park-2.png" />
-    <meta property="fc:frame:button:1" content="${castCustodyAddress}" />
-    <meta property="fc:frame:button:2" content="${tipButtons[1].amount}"/>
-    <meta property="fc:frame:button:2:action" content="post_redirect" />
-    <meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_URL}/api/frame?to=${castCustodyAddress}&fid=${message?.fid}" />
-  </head></html>`);
+  // @ts-ignore
+  return new Response('OK', {
+    status: 302,
+    headers: {
+      location: url,
+    },
+  });
+  // }
+
+  // return new NextResponse(`<!DOCTYPE html><html><head>
+  //   <meta property="fc:frame" content="vNext" />
+  //   <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/buy-coffee.WEBP" />
+  //   // <meta property="fc:frame:button:1" content="${castCustodyAddress}" />
+  //   // <meta property="fc:frame:button:2" content="${tipButtons[1].text}"/>
+  //   <meta property="fc:frame:button:2:action" content="post_redirect" />
+  //   <meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_URL}/api/frame?to=${castCustodyAddress}&fid=${message?.fid}" />
+  // </head></html>`);
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
