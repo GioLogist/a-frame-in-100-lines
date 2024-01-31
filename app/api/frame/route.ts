@@ -51,7 +51,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     <meta property="fc:frame:button:1" content="${castCustodyAddress}" />
     <meta property="fc:frame:button:2" content="🫡 Tip 0.000001" />
     <meta property="fc:frame:button:2:action" content="post_redirect" />
-    <meta property="fc:frame:button:2:post_url" content="${process.env.NEXT_PUBLIC_URL}/tip?amount=0.000001&to=${castCustodyAddress}" />
+    <meta property="fc:frame:button:2:post_url" content="${process.env.NEXT_PUBLIC_URL}/api/frame?amount=0.000001&to=${castCustodyAddress}" />
     <meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_URL}/api/frame" />
   </head></html>`);
 }
