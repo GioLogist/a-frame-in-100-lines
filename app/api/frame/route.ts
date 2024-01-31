@@ -1,5 +1,8 @@
 import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
+import makeDebug from 'debug';
+
+const debug = makeDebug('@@tip:debug');
 
 export const tipButtons = [
   {
@@ -27,7 +30,7 @@ export const tipButtons = [
 async function getResponse(req: NextRequest): Promise<NextResponse | Response> {
   const searchParams = req.nextUrl.searchParams;
   const queryString = searchParams.toString();
-  console.log('@@query', queryString);
+  debug('@@query', queryString);
 
   const body: FrameRequest = await req.json();
   const { isValid, message } = await getFrameMessage(body);
@@ -37,16 +40,18 @@ async function getResponse(req: NextRequest): Promise<NextResponse | Response> {
   if (isValid) {
     try {
       const usersResponse = await getUsersByFid(String(message.castId.fid));
-      console.log('@@usersResponse', usersResponse);
+      debug('@@usersResponse', usersResponse);
       castCustodyAddress = usersResponse?.users?.[0].custody_address; // user who interacted
-      console.log('@@castCustodyAddress', castCustodyAddress);
+      debug('@@castCustodyAddress', castCustodyAddress);
     } catch (err) {
-      console.log('@@testing', err);
       console.error(err);
+      return new Response('NOT OK', {
+        status: 401,
+      });
     }
   }
 
-  console.log(
+  debug(
     '@@castCustodyAddress',
     castCustodyAddress,
     'isValid',
@@ -66,15 +71,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse | Response> {
       location: url,
     },
   });
-
-  // return new NextResponse(`<!DOCTYPE html><html><head>
-  //   <meta property="fc:frame" content="vNext" />
-  //   <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/buy-coffee.WEBP" />
-  //   // <meta property="fc:frame:button:1" content="${castCustodyAddress}" />
-  //   // <meta property="fc:frame:button:2" content="${tipButtons[1].text}"/>
-  //   <meta property="fc:frame:button:2:action" content="post_redirect" />
-  //   <meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_URL}/api/frame?to=${castCustodyAddress}&fid=${message?.fid}" />
-  // </head></html>`);
 }
 
 export async function POST(req: NextRequest): Promise<Response> {

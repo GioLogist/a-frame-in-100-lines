@@ -9,7 +9,6 @@ import { GetUsersByFid } from '../api/frame/route';
 type TipPageExtendedType = { user: NonNullable<GetUsersByFid['users']>[0] };
 export default function SendTip({ searchParams, user }: TipPageType & TipPageExtendedType) {
   const { data: hash, error, isPending, sendTransaction } = useSendTransaction();
-  console.log('@@searchParams', searchParams, user);
   const toAddress = user.custody_address;
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
