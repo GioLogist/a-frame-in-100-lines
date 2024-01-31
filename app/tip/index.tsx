@@ -28,18 +28,32 @@ export default function SendTip({ searchParams, user }: TipPageType & TipPageExt
 
   return (
     <div className="modal">
-      <form onSubmit={submit}>
-        <input name="address" placeholder="0xA0Cf…251e" required />
-        <input name="value" placeholder="0.05" required value={searchParams.amount} />
-        <button disabled={isPending} type="submit">
-          {isPending ? 'Confirming...' : 'Send'}
-        </button>
-        {hash && <div>Transaction Hash: {hash}</div>}
-        {isConfirming && <div>Waiting for confirmation...</div>}
-        {isConfirmed && <div>Transaction confirmed.</div>}
-        {error && <div>Error: {(error as BaseError).shortMessage || error.message}</div>}
-      </form>
-      {JSON.stringify(user, null, 2)}
+      <div className="modal-header">
+        {/* */}
+        Sending
+        <div style={{ fontSize: 32 }}>🫡 {searchParams.amount} ETH</div>
+        to: <span style={{ color: 'black', fontWeight: 'bold' }}>{user.display_name}</span>
+        <div className="muted">({searchParams.to})</div>
+        <div style={{ height: 150, width: 150, overflow: 'hidden', margin: '25px auto 0 auto' }}>
+          <img src={user.pfp_url} className="avatar" />
+        </div>
+      </div>
+      <div className="modal-body">
+        <form onSubmit={submit}>
+          {/* <input name="address" placeholder="0xA0Cf…251e" required />
+          <input name="value" placeholder="0.05" required value={searchParams.amount} /> */}
+          <button disabled={isPending} type="submit" className="btn-lg page-bg mb-2">
+            {isPending ? 'Confirming...' : 'Send'}
+          </button>
+          {hash && <div className="mt-3">Transaction Hash: {hash}</div>}
+          {isConfirming && <div className="mt-3">Waiting for confirmation...</div>}
+          {isConfirmed && <div className="mt-3">Transaction confirmed.</div>}
+          {error && (
+            <div className="mt-3">Error: {(error as BaseError).shortMessage || error.message}</div>
+          )}
+        </form>
+        {/* {JSON.stringify(user, null, 2)} */}
+      </div>
     </div>
   );
 }

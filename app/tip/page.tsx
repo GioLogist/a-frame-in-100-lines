@@ -12,7 +12,6 @@ async function getUserByFid(fid: string) {
 
 export default async function Page({ searchParams }: TipPageType) {
   const user = await getUserByFid(searchParams.fid);
-  console.log('@@user', user);
 
   return <TipPage searchParams={searchParams} user={user} />;
 }

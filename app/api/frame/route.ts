@@ -1,6 +1,5 @@
 import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
-import { redirect } from 'next/navigation';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   const searchParams = req.nextUrl.searchParams;
@@ -62,7 +61,9 @@ export async function POST(req: NextRequest): Promise<Response> {
 }
 
 export type GetUsersByFid = Promise<{
-  users: [{ fid: number; custody_address: string }] | undefined;
+  users:
+    | [{ fid: number; custody_address: string; display_name: string; pfp_url: string }]
+    | undefined;
 }>;
 export function getUsersByFid(fids: string): GetUsersByFid {
   const options = {
