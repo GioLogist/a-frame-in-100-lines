@@ -47,9 +47,8 @@ export async function POST(req: NextRequest): Promise<Response> {
   return getResponse(req);
 }
 
-function getUsersByFid(
-  fids: string,
-): Promise<{ users: [{ fid: number; custody_address: string }] | undefined }> {
+type GetUsersByFid = Promise<{ users: [{ fid: number; custody_address: string }] | undefined }>;
+function getUsersByFid(fids: string): GetUsersByFid {
   const options = {
     method: 'GET',
     headers: { accept: 'application/json', api_key: 'NEYNAR_API_DOCS' },
@@ -58,7 +57,7 @@ function getUsersByFid(
   return fetch(`https://api.neynar.com/v2/farcaster/user/bulk?fids=${fids}`, options)
     .then((response) => response.json())
     .then((response) => console.log(response))
-    .catch((err) => console.error(err));
+    .catch((err) => console.error(err)) as any as GetUsersByFid;
 }
 
 export const dynamic = 'force-dynamic';

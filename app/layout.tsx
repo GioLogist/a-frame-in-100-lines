@@ -1,5 +1,4 @@
-import { WagmiProvider } from 'wagmi';
-import { config } from '../wagmi-config';
+import WagmiProviderCustom from '../src/WagmiConfig';
 import QueryProvider from '../src/QueryProvider';
 
 export const viewport = {
@@ -10,11 +9,11 @@ export const viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <WagmiProvider config={config}>
-        <QueryProvider>
-          <body>{children}</body>
-        </QueryProvider>
-      </WagmiProvider>
+      <body>
+        <WagmiProviderCustom>
+          <QueryProvider>{children}</QueryProvider>
+        </WagmiProviderCustom>
+      </body>
     </html>
   );
 }
