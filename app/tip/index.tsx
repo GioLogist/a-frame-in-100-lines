@@ -42,10 +42,23 @@ export default function SendTip({ searchParams, user }: TipPageType & TipPageExt
         <form onSubmit={submit}>
           {/* <input name="address" placeholder="0xA0Cf…251e" required />
           <input name="value" placeholder="0.05" required value={searchParams.amount} /> */}
-          <button disabled={isPending} type="submit" className="btn-lg page-bg mb-2">
-            {isPending ? 'Confirming...' : 'Send'}
-          </button>
-          {hash && <div className="mt-3">Transaction Hash: {hash}</div>}
+          {!hash && (
+            <button disabled={isPending} type="submit" className="btn-lg page-bg mb-2">
+              {isPending ? 'Confirming...' : 'Send'}
+            </button>
+          )}
+          {hash && (
+            <div className="mt-3">
+              <div style={{ fontSize: 32 }}>🤙🏻 Success!</div>
+
+              <div className="mt-3">
+                View your transaction on{' '}
+                <a href={`https://base-sepolia.blockscout.com/tx/${hash}`} target="_blank">
+                  BlockScout
+                </a>
+              </div>
+            </div>
+          )}
           {isConfirming && <div className="mt-3">Waiting for confirmation...</div>}
           {isConfirmed && <div className="mt-3">Transaction confirmed.</div>}
           {error && (
