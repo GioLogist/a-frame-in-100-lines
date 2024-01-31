@@ -1,6 +1,14 @@
 import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 
+const tipButtons = [
+  {},
+  {
+    amount: '0.000001',
+    text: '🫡 Tip 0.000001',
+  },
+];
+
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   const searchParams = req.nextUrl.searchParams;
   const queryString = searchParams.toString();
@@ -34,13 +42,14 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     body,
   );
 
-  if (searchParams.get('amount')) {
-    const url = `${process.env.NEXT_PUBLIC_URL}/tip?amount=${searchParams.get('amount')}&to=${searchParams.get('to')}`;
+  if (searchParams.get('to')) {
+    const amount = message?.buttonIndex && tipButtons[message?.buttonIndex - 1].amount;
+    const url = `${process.env.NEXT_PUBLIC_URL}/tip?amount=${amount}&to=${searchParams.get('to')}`;
     // @ts-ignore
     return new Response('OK', {
-      status: 301,
+      status: 302,
       headers: {
-        locoation: url,
+        location: url,
       },
     });
   }
@@ -49,10 +58,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     <meta property="fc:frame" content="vNext" />
     <meta property="fc:frame:image" content="${process.env.NEXT_PUBLIC_URL}/park-2.png" />
     <meta property="fc:frame:button:1" content="${castCustodyAddress}" />
-    <meta property="fc:frame:button:2" content="🫡 Tip 0.000001" />
+    <meta property="fc:frame:button:2" content="${tipButtons[1].amount}"/>
     <meta property="fc:frame:button:2:action" content="post_redirect" />
-    <meta property="fc:frame:button:2:post_url" content="${process.env.NEXT_PUBLIC_URL}/api/frame?amount=0.000001&to=${castCustodyAddress}" />
-    <meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_URL}/api/frame" />
+    <meta property="fc:frame:post_url" content="${process.env.NEXT_PUBLIC_URL}/api/frame?to=${castCustodyAddress}&fid=${message?.fid}" />
   </head></html>`);
 }
 
