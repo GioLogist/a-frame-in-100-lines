@@ -1,3 +1,7 @@
+import WagmiProviderCustom from '../src/WagmiConfig';
+import QueryProvider from '../src/QueryProvider';
+import '../src/globals.css';
+
 export const viewport = {
   width: 'device-width',
   initialScale: 1.0,
@@ -6,7 +10,11 @@ export const viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="page-bg">
+        <WagmiProviderCustom>
+          <QueryProvider>{children}</QueryProvider>
+        </WagmiProviderCustom>
+      </body>
     </html>
   );
 }

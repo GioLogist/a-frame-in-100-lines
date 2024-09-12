@@ -1,23 +1,21 @@
 import { getFrameMetadata } from '@coinbase/onchainkit';
 import type { Metadata } from 'next';
+import { tipButtons } from './api/frame/route';
 
 const frameMetadata = getFrameMetadata({
-  buttons: [
-    {
-      label: 'We love BOAT',
-    },
-  ],
-  image: 'https://zizzamia.xyz/park-1.png',
-  post_url: 'https://zizzamia.xyz/api/frame',
+  // @ts-ignore
+  buttons: tipButtons,
+  image: `${process.env.NEXT_PUBLIC_URL}/buy-coffee.WEBP`,
+  post_url: `${process.env.NEXT_PUBLIC_URL}/api/frame`,
 });
 
 export const metadata: Metadata = {
-  title: 'zizzamia.xyz',
+  title: process.env.NEXT_PUBLIC_URL,
   description: 'LFG',
   openGraph: {
-    title: 'zizzamia.xyz',
+    title: process.env.NEXT_PUBLIC_URL,
     description: 'LFG',
-    images: ['https://zizzamia.xyz/park-1.png'],
+    images: [`${process.env.NEXT_PUBLIC_URL}/park-1.png`],
   },
   other: {
     ...frameMetadata,
@@ -27,7 +25,12 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
-      <h1>zizzamia.xyz</h1>
+      <h1>{process.env.NEXT_PUBLIC_URL}</h1>
+      <img
+        style={{ maxWidth: '100%' }}
+        src="/buy-coffee.WEBP"
+        alt="A Farcaster frame to buy a user coffee"
+      />
     </>
   );
 }

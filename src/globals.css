@@ -1,0 +1,65 @@
+.page-bg {
+  background-image: linear-gradient(to right, var(--tw-gradient-stops));
+  --tw-gradient-from: #ea495f var(--tw-gradient-from-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  --tw-gradient-to: #e43d84 var(--tw-gradient-to-position);
+  --tw-gradient-from-position: ;
+  --tw-gradient-via-position: ;
+  --tw-gradient-to-position: ;
+}
+
+.modal {
+  font-family: sans-serif;
+  background-color: rgb(255 255 255);
+  box-shadow:
+    0 0 #0000,
+    0 0 #0000,
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 10px 15px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  border: 1px solid #b13067;
+  max-width: 500px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.modal-header,
+.modal-body {
+  padding: 24px;
+  text-align: center;
+}
+
+.avatar {
+  width: 100%;
+  border-radius: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-header {
+  background: #eff0f4;
+  color: #162c69;
+}
+
+.btn-lg {
+  width: 100%;
+  padding: 24px 0;
+  display: inline-block;
+  border-radius: 12px;
+  border: 0;
+  color: white;
+  font-size: 24px;
+}
+
+.mt-3 {
+  margin-top: 24px;
+}
+
+.muted {
+  color: rgb(117 117 117);
+  font-size: 12px;
+}
+
+.modal a {
+  color: rgb(117 117 117);
+}
